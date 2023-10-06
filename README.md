@@ -22,8 +22,8 @@ Set-LocalUser -Name "Administrator" -Password $adminPassword
 ## What does it do?
 
 - Sets static IP + DNS
-- Creates a directory + a file for the autorization of DHCP
-- Installs WinSCP and Firefox using Chocolatey
+- Creates a directory and a file for the autorization of DHCP
+- Installs WinSCP and FireFox using Chocolatey
 - Installs DHCP
 - Registers a scheduled task that runs without terminal to trigger DHCP authorization
-- Install ADDS, DNS and promotes to Domain Controller
+- Installs ADDS, DNS and promotes to Domain Controller
