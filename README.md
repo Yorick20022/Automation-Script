@@ -18,3 +18,12 @@ Rename-Computer -NewName "WhateverYouWant"
 $adminPassword = ConvertTo-SecureString -String "BrownGreen78!" -AsPlainText -Force
 Set-LocalUser -Name "Administrator" -Password $adminPassword
 ```
+
+## What does it do?
+
+- Sets static IP + DNS
+- Creates a directory and a file for the autorization of DHCP
+- Installs WinSCP and FireFox using Chocolatey
+- Installs DHCP
+- Registers a scheduled task that runs without terminal to trigger DHCP authorization
+- Installs ADDS, DNS and promotes to Domain Controller
