@@ -18,7 +18,9 @@ param(
     [Parameter(Position = 8)]
     [string]$dhcpScopeSubnetMask = "255.255.255.0",
     [Parameter(Position = 9)]
-    [string]$domainNetBiosName = "automation"
+    [string]$domainNetBiosName = "automation",
+    [Parameter(Position = 10)]
+    [string]$passBeforeSecureString = "BrownGreen78!"
 )
 
 $ipAddresses = Get-NetIPAddress
@@ -41,9 +43,11 @@ else {
     Write-Output "Done configuring network settings"
 }
 
-# Define the folder path and script content
+# Define the folder path and IP address as variables
 $folderPath = "C:\ps"
-$scriptContent = 'Add-DhcpServerInDC -DnsName "automation.local" -IPAddress "192.168.1.15"'
+
+# Define the script content with the IP address variable
+$scriptContent = "Add-DhcpServerInDC -DnsName 'automation.local' -IPAddress '$staticIp'"
 
 # Check if the folder exists, and create it if it doesn't
 if (-not (Test-Path -Path $folderPath -PathType Container)) {
@@ -53,6 +57,7 @@ if (-not (Test-Path -Path $folderPath -PathType Container)) {
 # Create the authorize.ps1 script file with the specified content
 $scriptPath = Join-Path -Path $folderPath -ChildPath "authorize.ps1"
 $scriptContent | Out-File -FilePath $scriptPath
+
 
 Write-Host "Created the file in $folderPath"
 
@@ -85,6 +90,6 @@ else {
 Register-ScheduledTask -TaskName "Authorize DHCP" -Action (New-ScheduledTaskAction -Execute "powershell.exe" -Argument "C:\ps\authorize.ps1") -Trigger (New-ScheduledTaskTrigger -AtLogOn) -User "NT AUTHORITY\SYSTEM" -Force
 Start-Sleep -Seconds 5
 Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
-$securePassword = ConvertTo-SecureString -String "BrownGreen78!" -AsPlainText -Force
+$securePassword = ConvertTo-SecureString -String $passBeforeSecureString -AsPlainText -Force
 Install-ADDSForest -DomainName $domainName -DomainNetbiosName $domainNetBiosName -ForestMode default -DomainMode default -NoRebootOnCompletion -SafeModeAdministratorPassword $securePassword -Confirm:$false
 Restart-Computer -Force
