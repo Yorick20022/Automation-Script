@@ -25,5 +25,6 @@ Set-LocalUser -Name "Administrator" -Password $adminPassword
 - Creates a directory and a file for the autorization of DHCP
 - Installs WinSCP and FireFox using Chocolatey
 - Installs DHCP
+- - Also creates a DHCP scope
 - Registers a scheduled task that runs without terminal to trigger DHCP authorization
 - Installs ADDS, DNS and promotes to Domain Controller
