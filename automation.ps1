@@ -47,8 +47,9 @@ else {
 $folderPath = "C:\ps"
 
 # Define the script content with the IP address variable
-$scriptContent = "Add-DhcpServerInDC -DnsName 'automation.local' -IPAddress '$staticIp'"
-
+$scriptContent = "Add-DhcpServerInDC -DnsName 'automation.local' -IPAddress '$staticIp'" + "`r`n"
+$scriptContent += "Start-Sleep -Seconds 20" + "`r`n"
+$scriptContent += "Unregister-ScheduledTask -TaskName 'Authorize DHCP' -Confirm:`$false"
 # Check if the folder exists, and create it if it doesn't
 if (-not (Test-Path -Path $folderPath -PathType Container)) {
     New-Item -Path $folderPath -ItemType Directory
