@@ -91,6 +91,7 @@ if (!$dhcpRole.installed) {
     Add-DhcpServerv4Scope -Name $dhcpScopeName -StartRange $dhcpScopeStartRange -EndRange $dhcpScopeEndRange -SubnetMask $dhcpScopeSubnetMask
     # Remove configuration warning in server manager
     Set-ItemProperty –Path registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\ServerManager\Roles\12 –Name ConfigurationState –Value 2
+    # Met de line hierboven zorg ik er voor dat de melding in de server manager weg gaat.
 }
 else {
     Write-Host "DHCP role is installed"
