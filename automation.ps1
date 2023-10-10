@@ -1,4 +1,4 @@
-# Hieronder define ik de variables die ik gebruik in de script.
+# Hieronder define ik de variables die ik gebruik in het script.
 
 param(
     [Parameter(Position = 0)]
