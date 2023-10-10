@@ -1,3 +1,5 @@
+# Hieronder define ik de variables die ik gebruik in de script.
+
 param(
     [Parameter(Position = 0)]
     [string]$staticIp = "192.168.1.15",
@@ -26,6 +28,8 @@ param(
 $ipAddresses = Get-NetIPAddress
 $staticIpFound = $ipAddresses | Where-Object { $_.PrefixOrigin -eq 'Manual' }
 
+# Als er een statisch IP is ingesteld dan wordt deze verwijderd en wordt er een DHCP ingesteld.
+
 if ($staticIpFound) {
     Write-Output "The computer has an existing network configuration, I will remove it"
     $adapterIndex = (Get-NetAdapter).InterfaceIndex
@@ -43,10 +47,10 @@ else {
     Write-Output "Done configuring network settings"
 }
 
-# Define the folder path and IP address as variables
+# Pad naar de map waar het script wordt opgeslagen
 $folderPath = "C:\ps"
 
-# Define the script content with the IP address variable
+# Hier wordt de inhoud van het script gedefinieerd
 $scriptContent = "Add-DhcpServerInDC -DnsName 'automation.local' -IPAddress '$staticIp'" + "`r`n"
 $scriptContent += "Start-Sleep -Seconds 20" + "`r`n"
 $scriptContent += "Unregister-ScheduledTask -TaskName 'Authorize DHCP' -Confirm:`$false"
@@ -55,18 +59,21 @@ if (-not (Test-Path -Path $folderPath -PathType Container)) {
     New-Item -Path $folderPath -ItemType Directory
 }
 
-# Create the authorize.ps1 script file with the specified content
+# Hier wordt de inhoud van het script opgeslagen in een bestand
 $scriptPath = Join-Path -Path $folderPath -ChildPath "authorize.ps1"
 $scriptContent | Out-File -FilePath $scriptPath
 
-
+# Dit is een bericht dat wordt weergegeven als het script is gemaakt
 Write-Host "Created the file in $folderPath"
 
+# Om problemen met connectie voorkomen na het instellen van de gegevens zal er 5 seconden worden gewacht.
 Start-Sleep -Seconds 5
 
+# Hier onder wordt Chocolatey geinstallleerd. Hiermee kan ik applicaties installeren zoals WinSCP en Firefox.
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 choco feature enable --name=allowGlobalConfirmation
 
+# Hier define ik een list met applicaties die ik wil installeren.
 $preInstalledApps = @("winscp", "firefox")
 
 foreach ($preInstalledApp in $preInstalledApps) {
@@ -75,6 +82,7 @@ foreach ($preInstalledApp in $preInstalledApps) {
 
 $dhcpRole = Get-WindowsFeature -Name DHCP*
 
+# Hier wordt gekeken of de DHCP role is geinstalleerd. Als dit niet het geval is dan wordt deze geinstalleerd.
 if (!$dhcpRole.installed) {
     Write-Host "DHCP role is not installed, installing right now."
     # Install DHCP role
@@ -88,6 +96,7 @@ else {
     Write-Host "DHCP role is installed"
 }
 
+# Hier wordt de DHCP geauthoriseerd en ADDS geinstalleerd + DNS.
 Register-ScheduledTask -TaskName "Authorize DHCP" -Action (New-ScheduledTaskAction -Execute "powershell.exe" -Argument "C:\ps\authorize.ps1") -Trigger (New-ScheduledTaskTrigger -AtLogOn) -User "NT AUTHORITY\SYSTEM" -Force
 Start-Sleep -Seconds 5
 Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
