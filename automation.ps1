@@ -97,7 +97,7 @@ else {
     Write-Host "DHCP role is installed"
 }
 
-# Hier wordt de DHCP geauthoriseerd en ADDS geinstalleerd + DNS.
+# Hier wordt de DHCP geauthoriseerd, een taak aangemaakt en ADDS geinstalleerd + DNS.
 Register-ScheduledTask -TaskName "Authorize DHCP" -Action (New-ScheduledTaskAction -Execute "powershell.exe" -Argument "C:\ps\authorize.ps1") -Trigger (New-ScheduledTaskTrigger -AtLogOn) -User "NT AUTHORITY\SYSTEM" -Force
 Start-Sleep -Seconds 5
 Install-WindowsFeature -Name AD-Domain-Services -IncludeManagementTools
