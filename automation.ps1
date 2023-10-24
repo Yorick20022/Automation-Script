@@ -82,7 +82,7 @@ foreach ($preInstalledApp in $preInstalledApps) {
 
 $dhcpRole = Get-WindowsFeature -Name DHCP*
 
-# Hier wordt gekeken of de DHCP role is geinstalleerd. Als dit niet het geval is dan wordt deze geinstalleerd.
+# Hier wordt gekeken of de DHCP role is geinstalleerd. Als dit niet het geval is dan wordt deze geinstalleerd
 if (!$dhcpRole.installed) {
     Write-Host "DHCP role is not installed, installing right now."
     # Install DHCP role
