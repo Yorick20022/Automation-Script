@@ -63,7 +63,7 @@ if (-not (Test-Path -Path $folderPath -PathType Container)) {
 $scriptPath = Join-Path -Path $folderPath -ChildPath "authorize.ps1"
 $scriptContent | Out-File -FilePath $scriptPath
 
-# Dit is een bericht dat wordt weergegeven als het script is gemaakt
+# Dit is een bericht dat wordt weergegeven als het script is gemaakt.
 Write-Host "Created the file in $folderPath"
 
 # Om problemen met connectie voorkomen na het instellen van de gegevens zal er 5 seconden worden gewacht.
